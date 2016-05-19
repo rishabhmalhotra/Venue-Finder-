@@ -1,0 +1,70 @@
+__author__ = 'RishabhMalhotra'
+import urllib2
+import json
+
+locu_api_key = '4d2ad826b2c2b7dd28116a92d3a3c98d78289b5b'
+
+input_country = raw_input(
+    "Hi there!! \n Please enter your country : ")  # consider the United States and unitedstates prob
+
+input_locality = raw_input("Please enter your city : ")
+
+input_venue_type = raw_input(
+    "Now please enter whether you would like to find nearby restaurants or SPA venues? ")  # add venue categories
+
+
+def input_next():
+    if input_venue_type.upper() == 'RESTAURANTS' or 'RESTAURANT' :
+        unique_url = 'https://api.locu.com/v1_0/venue/search/?country=' + input_country.upper() + '&locality=' + input_locality.lower() + '&category=restaurant&api_key=4d2ad826b2c2b7dd28116a92d3a3c98d78289b5b'
+        return unique_url
+    else:
+        unique_url = 'https://api.locu.com/v1_0/venue/search/?country=' + input_country.upper() + '&locality=' + input_locality.lower() + '&category=spa&api_key=4d2ad826b2c2b7dd28116a92d3a3c98d78289b5b'
+        return unique_url
+
+
+input_next()
+
+json_obj = urllib2.urlopen(input_next())
+my_data = json.load(json_obj)  # print my_data
+
+listofdict = my_data[u'objects']
+
+
+def getting_dicts():
+    for dict in listofdict:
+        return dict  # function_applied(dict)
+
+
+getting_dicts()
+
+
+listof_unames = map(lambda x: x[u'name'], listofdict)                           # gives the names of all venues as a list of unicode characters
+
+
+listof_names = map(lambda x: x.encode("ascii"), listof_unames)                  # gives the names of all venues as a list (same as above) except that they're in ascii
+
+
+def name_display(i):                                           # loop for displaying names of places vertically instead of as a list
+    for name in listof_names:
+        print name, "=", i + 1
+        i += 1
+
+name_display(0)
+
+
+user_input = int(raw_input("Please choose the desired option by enering the corresponding number:\n"))
+
+reqd_dict = listofdict[user_input - 1]
+
+listofpairs = reqd_dict.items()                                # converts the reqd_dict from the dictionary type (which it is originally in) to
+
+
+'''clear = "\n" * 10000                                        #quick hack that I could figure out for clearing the previous screen for ease of reading.
+
+print clear'''
+
+def final_output():
+    for pair in listofpairs:
+        print pair[0], "=", pair[1]
+
+final_output()
